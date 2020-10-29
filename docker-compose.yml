@@ -43,9 +43,9 @@ services:
       - minio
     environment:
       - RUNDECK_NODE=rundeck1
-      - RUNDECK_GRAILS_URL=http://localhost:4442
-      - RUNDECK_SERVER_UUID=0b5440b7-4ab7-4f83-8f45-dddea83a1f5c
-      - RUNDECK_DATABASE_DRIVER=com.mysql.jdbc.Driver
+      - RUNDECK_GRAILS_URL=http://localhost:4441
+      - XRUNDECK_SERVER_UUID=0b5440b7-4ab7-4f83-8f45-dddea83a1f5c
+      - RUNDECK_DATABASE_DRIVER=org.mariadb.jdbc.Driver
       - RUNDECK_DATABASE_URL=jdbc:mysql://mysql/rundeck?autoReconnect=true&useUnicode=yes&useSSL=false
       - RUNDECK_DATABASE_USERNAME=rundeck
       - RUNDECK_DATABASE_PASSWORD=rundeck
@@ -57,12 +57,14 @@ services:
       - RUNDECK_PLUGIN_EXECUTIONFILESTORAGE_S3_ENDPOINT=http://minio:9000/
       - RUNDECK_PLUGIN_EXECUTIONFILESTORAGE_S3_PATHSTYLE=true
       - RUNDECK_PLUGIN_EXECUTIONFILESTORAGE_S3_ALLOWDELETE=true
+      - RUNDECK_PLUGIN_CLUSTER_REMOTEEXECUTION_POLICY=Load
+      - RUNDECK_PLUGIN_CLUSTER_REMOTEEXECUTION_CONFIG_ALLOWEDTAGS=worker
       - TZ=America/Los_Angeles
     volumes:
       - ./realm.properties:/home/rundeck/server/config/realm.properties
       - ${RUNDECK_LICENSE_FILE:-/dev/null}:/home/rundeck/etc/rundeckpro-license.key
     ports:
-      - "4442:4440"
+      - "4441:4440"
   rundeck2:
     hostname: rundeck2
     # image: rundeckpro/enterprise:${RDVERS:-SNAPSHOT}
@@ -72,9 +74,9 @@ services:
       - minio
     environment:
       - RUNDECK_NODE=rundeck2
-      - RUNDECK_GRAILS_URL=http://localhost:4441
-      - RUNDECK_SERVER_UUID=DB6ADE59-95FF-4EE5-AC20-400E43171136
-      - RUNDECK_DATABASE_DRIVER=com.mysql.jdbc.Driver
+      - RUNDECK_GRAILS_URL=http://localhost:4442
+      - XRUNDECK_SERVER_UUID=DB6ADE59-95FF-4EE5-AC20-400E43171136
+      - RUNDECK_DATABASE_DRIVER=org.mariadb.jdbc.Driver
       - RUNDECK_DATABASE_URL=jdbc:mysql://mysql/rundeck?autoReconnect=true&useUnicode=yes&useSSL=false
       - RUNDECK_DATABASE_USERNAME=rundeck
       - RUNDECK_DATABASE_PASSWORD=rundeck
@@ -85,12 +87,44 @@ services:
       - RUNDECK_PLUGIN_EXECUTIONFILESTORAGE_S3_ENDPOINT=http://minio:9000/
       - RUNDECK_PLUGIN_EXECUTIONFILESTORAGE_S3_PATHSTYLE=true
       - RUNDECK_PLUGIN_EXECUTIONFILESTORAGE_S3_ALLOWDELETE=true
+      - RUNDECK_PLUGIN_CLUSTER_REMOTEEXECUTION_POLICY=Load
+      - RUNDECK_PLUGIN_CLUSTER_REMOTEEXECUTION_CONFIG_ALLOWEDTAGS=worker
       - TZ=America/Los_Angeles
     volumes:
       - ./realm.properties:/home/rundeck/server/config/realm.properties
       - ${RUNDECK_LICENSE_FILE:-/dev/null}:/home/rundeck/etc/rundeckpro-license.key
     ports:
-      - "4441:4440"
+      - "4442:4440"
+  rundeck3:
+    hostname: rundeck3
+    # image: rundeckpro/enterprise:${RDVERS:-SNAPSHOT}
+    build: ./
+    links:
+      - mysql
+      - minio
+    environment:
+      - RUNDECK_NODE=rundeck2
+      - RUNDECK_GRAILS_URL=http://localhost:4443
+      - XRUNDECK_SERVER_UUID=DB6ADE59-95FF-4EE5-AC20-400E43171136
+      - RUNDECK_DATABASE_DRIVER=org.mariadb.jdbc.Driver
+      - RUNDECK_DATABASE_URL=jdbc:mysql://mysql/rundeck?autoReconnect=true&useUnicode=yes&useSSL=false
+      - RUNDECK_DATABASE_USERNAME=rundeck
+      - RUNDECK_DATABASE_PASSWORD=rundeck
+      - RUNDECK_SECURITY_DBLOGIN_ENABLED=true
+      - RUNDECK_PLUGIN_EXECUTIONFILESTORAGE_NAME=com.rundeck.rundeckpro.amazon-s3
+      - RUNDECK_PLUGIN_EXECUTIONFILESTORAGE_S3_BUCKET=logs1
+      - RUNDECK_PLUGIN_EXECUTIONFILESTORAGE_S3_REGION=us-east-1
+      - RUNDECK_PLUGIN_EXECUTIONFILESTORAGE_S3_ENDPOINT=http://minio:9000/
+      - RUNDECK_PLUGIN_EXECUTIONFILESTORAGE_S3_PATHSTYLE=true
+      - RUNDECK_PLUGIN_EXECUTIONFILESTORAGE_S3_ALLOWDELETE=true
+      - RUNDECK_PLUGIN_CLUSTER_REMOTEEXECUTION_POLICY=Load
+      - RUNDECK_PLUGIN_CLUSTER_REMOTEEXECUTION_CONFIG_ALLOWEDTAGS=worker
+      - TZ=America/Los_Angeles
+    volumes:
+      - ./realm.properties:/home/rundeck/server/config/realm.properties
+      - ${RUNDECK_LICENSE_FILE:-/dev/null}:/home/rundeck/etc/rundeckpro-license.key
+    ports:
+      - "4443:4440"
 
 volumes:
   logs:
