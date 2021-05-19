@@ -61,6 +61,7 @@ services:
       - RUNDECK_PLUGIN_EXECUTIONFILESTORAGE_S3_ALLOWDELETE=true
       - RUNDECK_PLUGIN_CLUSTER_REMOTEEXECUTION_POLICY=Load
       - RUNDECK_PLUGIN_CLUSTER_REMOTEEXECUTION_CONFIG_ALLOWEDTAGS=worker
+      - RUNDECK_DATABASE_CREATE=none
       - TZ=America/Los_Angeles
     volumes:
       - ./realm.properties:/home/rundeck/server/config/realm.properties
@@ -93,6 +94,7 @@ services:
       - RUNDECK_PLUGIN_EXECUTIONFILESTORAGE_S3_ALLOWDELETE=true
       - RUNDECK_PLUGIN_CLUSTER_REMOTEEXECUTION_POLICY=Load
       - RUNDECK_PLUGIN_CLUSTER_REMOTEEXECUTION_CONFIG_ALLOWEDTAGS=worker
+      - RUNDECK_DATABASE_CREATE=none
       - TZ=America/Los_Angeles
     volumes:
       - ./realm.properties:/home/rundeck/server/config/realm.properties
