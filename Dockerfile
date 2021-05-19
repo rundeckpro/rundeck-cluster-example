@@ -1,5 +1,5 @@
-ARG RDVERS
-FROM rundeckpro/enterprise:${RDVERS:-SNAPSHOT} 
+ARG RDIMG
+FROM ${RDIMG:-rundeckpro/enterprise:SNAPSHOT} 
 
 RUN mkdir -p /tmp/remco-partials/framework
 COPY framework-ext.properties /tmp/remco-partials/framework/framework-ext.properties
